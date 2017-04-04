@@ -7,8 +7,28 @@ def add_polygon( points, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
     add_point( points, x1, y1, z1 )
     add_point( points, x2, y2, z2 )
 
-def draw_polygons( points, screen, color ):
-    
+def draw_polygons( matrix, screen, color ):
+    if len(matrix) < 3:
+        print "You need 3 points to draw a triangle"
+
+    point = 0
+    while point < len(matrix) - 2:
+        draw_line( int(matrix[point][0]),
+                   int(matrix[point][1]),
+                   int(matrix[point+1][0]),
+                   int(matrix[point+1][1]),
+                   screen, color)
+        draw_line( int(matrix[point+2][0]),
+                   int(matrix[point+2][1]),
+                   int(matrix[point+1][0]),
+                   int(matrix[point+1][1]),
+                   screen, color)
+        draw_line( int(matrix[point][0]),
+                   int(matrix[point][1]),
+                   int(matrix[point+2][0]),
+                   int(matrix[point+2][1]),
+                   screen, color)
+        point+= 3
 
 def add_box( points, x, y, z, width, height, depth ):
     x1 = x + width
@@ -32,22 +52,34 @@ def add_sphere( edges, cx, cy, cz, r, step ):
     num_steps = int(1/step+0.1)
     
     lat_start = 0
-    lat_stop = num_steps
+    lat_stop = 2
     longt_start = 0
     longt_stop = num_steps
 
     num_steps+= 1
     for lat in range(lat_start, lat_stop):
-        for longt in range(longt_start, longt_stop+1):
+        for longt in range(longt_start, longt_stop):
             index = lat * num_steps + longt
             
+            add_polygon( edges, points[index][0],
+                         points[index][1],
+                         points[index][2],
+                         points[index+1][0],
+                         points[index+1][1],
+                         points[index+1][2],
+                         points[(index+num_steps)%(lat_stop * num_steps)][0],
+                         points[(index+num_steps)%(lat_stop * num_steps)][1],
+                         points[(index+num_steps)%(lat_stop * num_steps)][2]
+                         
+            )
+            '''
             add_edge(edges, points[index][0],
                      points[index][1],
                      points[index][2],
                      points[index][0]+1,
                      points[index][1]+1,
                      points[index][2]+1 )
-
+            '''
 def generate_sphere( cx, cy, cz, r, step ):
     points = []
     num_steps = int(1/step+0.1)
