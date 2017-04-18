@@ -85,14 +85,17 @@ def add_sphere( edges, cx, cy, cz, r, step ):
                          points[(index+num_steps)%(lat_stop * num_steps)][2]
                          
             )
-            '''
-            add_edge(edges, points[index][0],
-                     points[index][1],
-                     points[index][2],
-                     points[index][0]+1,
-                     points[index][1]+1,
-                     points[index][2]+1 )
-            '''
+            add_polygon( edges, points[index+1][0],
+                         points[index+1][1],
+                         points[index+1][2],
+                         points[(index+num_steps)%(lat_stop * num_steps)][0],
+                         points[(index+num_steps)%(lat_stop * num_steps)][1],
+                         points[(index+num_steps)%(lat_stop * num_steps)][2],
+                         points[(index+num_steps+1)%(lat_stop * num_steps)][0],
+                         points[(index+num_steps+1)%(lat_stop * num_steps)][1],
+                         points[(index+num_steps+1)%(lat_stop * num_steps)][2]
+            )
+            
 def generate_sphere( cx, cy, cz, r, step ):
     points = []
     num_steps = int(1/step+0.1)
@@ -128,18 +131,29 @@ def add_torus( edges, cx, cy, cz, r0, r1, step ):
         for longt in range(longt_start, longt_stop):
             index = lat * num_steps + longt
 
-            '''
+            
             add_polygon(edges, points[index][0],
                         points[index][1],
                         points[index][2],
-                        points[index+1][0],
-                        points[index+1][1],
-                        points[index+1][2],
+                        points[(index+1)%(longt_stop * num_steps)][0],
+                        points[(index+1)%(longt_stop * num_steps)][1],
+                        points[(index+1)%(longt_stop * num_steps)][2],
                         points[(index+num_steps)%(lat_stop * num_steps)][0],
                         points[(index+num_steps)%(lat_stop * num_steps)][1],
                         points[(index+num_steps)%(lat_stop * num_steps)][2]
             )
-            '''
+
+            add_polygon(edges, points[(index+1)%(longt_stop * num_steps)][0],
+                        points[(index+1)%(longt_stop * num_steps)][1],
+                        points[(index+1)%(longt_stop * num_steps)][2],
+                        points[(index+num_steps)%(lat_stop * num_steps)][0],
+                        points[(index+num_steps)%(lat_stop * num_steps)][1],
+                        points[(index+num_steps)%(lat_stop * num_steps)][2],
+                        points[(index+num_steps+1)%(lat_stop * num_steps)][0],
+                        points[(index+num_steps+1)%(lat_stop * num_steps)][1],
+                        points[(index+num_steps+1)%(lat_stop * num_steps)][2]
+            )
+            
 
 def generate_torus( cx, cy, cz, r0, r1, step ):
     points = []
@@ -245,11 +259,11 @@ def draw_line( x0, y0, x1, y1, screen, color ):
                 if d > 0:
                     y+= 1
                     d+= B
-                    x+= 1
-                    d+= A
-                    #end octant 1 while
+                x+= 1
+                d+= A
+            #end octant 1 while
             plot(screen, color, x1, y1)
-            #end octant 1
+        #end octant 1
 
         #octant 8
         else:
@@ -260,12 +274,12 @@ def draw_line( x0, y0, x1, y1, screen, color ):
                 if d < 0:
                     y-= 1
                     d-= B
-                    x+= 1
-                    d+= A
-                    #end octant 8 while
+                x+= 1
+                d+= A
+            #end octant 8 while
             plot(screen, color, x1, y1)
-            #end octant 8
-            #end octants 1 and 8
+        #end octant 8
+    #end octants 1 and 8
 
     #octants 2 and 7
     else:
@@ -278,11 +292,11 @@ def draw_line( x0, y0, x1, y1, screen, color ):
                 if d < 0:
                     x+= 1
                     d+= A
-                    y+= 1
-                    d+= B
-                    #end octant 2 while
+                y+= 1
+                d+= B
+            #end octant 2 while
             plot(screen, color, x1, y1)
-            #end octant 2
+        #end octant 2
 
         #octant 7
         else:
@@ -293,10 +307,10 @@ def draw_line( x0, y0, x1, y1, screen, color ):
                 if d > 0:
                     x+= 1
                     d+= A
-                    y-= 1
-                    d-= B
-                    #end octant 7 while
+                y-= 1
+                d-= B
+            #end octant 7 while
             plot(screen, color, x1, y1)
-            #end octant 7
-            #end octants 2 and 7
-            #end draw_line
+        #end octant 7
+    #end octants 2 and 7
+#end draw_line
