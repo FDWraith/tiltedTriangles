@@ -10,26 +10,35 @@ def add_polygon( points, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
 def draw_polygons( matrix, screen, color ):
     if len(matrix) < 3:
         print "You need 3 points to draw a triangle"
-
+        
     point = 0
     while point < len(matrix) - 2:
-        draw_line( int(matrix[point][0]),
-                   int(matrix[point][1]),
-                   int(matrix[point+1][0]),
-                   int(matrix[point+1][1]),
-                   screen, color)
-        draw_line( int(matrix[point+2][0]),
-                   int(matrix[point+2][1]),
-                   int(matrix[point+1][0]),
-                   int(matrix[point+1][1]),
-                   screen, color)
-        draw_line( int(matrix[point][0]),
-                   int(matrix[point][1]),
-                   int(matrix[point+2][0]),
-                   int(matrix[point+2][1]),
-                   screen, color)
+
+        #Backface Calling implementation
+        if checkBackFace( matrix[point][0], matrix[point][1], matrix[point][2], matrix[point+1][0], matrix[point+1][1], matrix[point+1][2], matrix[point+2][0], matrix[point+2][1], matrix[point+2][2] ):
+            draw_line( int(matrix[point][0]),
+                       int(matrix[point][1]),
+                       int(matrix[point+1][0]),
+                       int(matrix[point+1][1]),
+                       screen, color)
+            draw_line( int(matrix[point+2][0]),
+                       int(matrix[point+2][1]),
+                       int(matrix[point+1][0]),
+                       int(matrix[point+1][1]),
+                       screen, color)
+            draw_line( int(matrix[point][0]),
+                       int(matrix[point][1]),
+                       int(matrix[point+2][0]),
+                       int(matrix[point+2][1]),
+                       screen, color)
         point+= 3
 
+def checkBackFace( x0, y0, z0, x1, y1, z1, x2, y2, z2):
+    A = [ x1-x0, y1-y0, z1-z0 ]
+    B = [ x2-x0, y2-y0, z2-z0 ]
+    N = [ A[1]*B[2] - A[2]*B[1], A[2]*B[0] - A[0]*B[2], A[0]*B[1] - A[1]*B[0] ]
+    return N[2] > 0 
+        
 def add_box( points, x, y, z, width, height, depth ):
     x1 = x + width
     y1 = y - height
